@@ -4,6 +4,8 @@ import mediapipe as mp
 import tensorflow as tf
 from tensorflow.keras.models import load_model
 
+from drone import drone_cmd
+
 cap = cv2.VideoCapture(0)
 
 mp_hands_collection = mp.solutions.hands
@@ -49,7 +51,16 @@ while True:
 
         cv2.putText(frame, class_name, (10,50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2, cv2.LINE_AA)
 
-    cv2.imshow("Hand Gesture Demo", frame)
+    # opencv ui
+    cv2.imshow("Drone Human Interface", frame)
+
+    drone_speed = drone_cmd.get_info("speed")
+    drone_dir = drone_cmd.get_info("direction")
+    drone_lvl = drone_cmd.get_info("battery")
+
+    cv2.putText(frame, drone_speed, (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0))
+    cv2.putText(frame, drone_dir, (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0))
+    cv2.putText(frame, drone_lvl, (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0))
 
     if cv2.waitKey(1) == ord("q"):
         break
