@@ -10,4 +10,11 @@ Hardware
 
 Software
 
+## Quickstart
 
+```
+pip install -r requirements.txt
+python app.py
+```
+
+Go to localhost port `8000`.
