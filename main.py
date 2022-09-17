@@ -38,6 +38,7 @@ while True:
         landmarks = []
         for hand_landmarks in result.multi_hand_landmarks:
             for landmark in hand_landmarks.landmark:
+                print(landmark)
                 landmarks.append([int(landmark.x*x), int(landmark.y*y)])
 
             mp_draw_obj.draw_landmarks(frame, hand_landmarks, mp_hands_collection.HAND_CONNECTIONS)
