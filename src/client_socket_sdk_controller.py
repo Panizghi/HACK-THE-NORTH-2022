@@ -11,6 +11,5 @@ async def connect_to_client():
             await websocket.send(json.dumps(client_data))
             server_data = await websocket.recv()
             print(server_data)
-            time.sleep(0.1)
 
 asyncio.run(connect_to_client())
