@@ -82,7 +82,7 @@ class CommandPrediction:
             elif self.x_centroid_curr > 0.7:
                 pred_vector["direction"] = "rotate_right"
         
-        pred_vector["magnitude"] = round(math.sqrt((0.5-self.x_centroid_curr)**2+(0.5-self.y_centroid_curr)**2),3)
+        pred_vector["magnitude"] = round(100*math.sqrt((0.5-self.x_centroid_curr)**2+(0.5-self.y_centroid_curr)**2),3)
 
         return pred_vector
 
