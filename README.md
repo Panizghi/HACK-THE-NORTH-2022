@@ -12,9 +12,41 @@ Software
 
 ## Quickstart
 
+Install dependencies.
+
 ```
 pip install -r requirements.txt
+```
+
+Start server
+
+```
 python app.py
 ```
+
+Start clients
+```
+python -m src.client_socket_opencv
+python -m src.client_socket_sdk_controller
+python -m src.client_socket_speech
+```
+
+`src/client_socket_sdk_controller.py` controls the Drone. Include the code under the `while True` loop block.
+
+`server_data` is a dictionary variable with the commands:
+```
+{"data": {"commandVector": {"direction":"hover", "magnitude":0, "predictedClass":"stop"}}}
+```
+
+Choices of direction:
+
+* `front`
+* `back`
+* `left`
+* `right`
+* `top`
+* `bottom`
+* `rotate_left`
+* `rotate_right`
 
 Go to localhost port `8000`.
