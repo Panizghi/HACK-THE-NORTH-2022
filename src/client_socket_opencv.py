@@ -60,26 +60,26 @@ class CommandPrediction:
 
 
     def compute_direction_and_magnitude(self, class_name):
-        pred_vector = {"direction": "hover", "magnitude": 0, "predictedClass": class_name}
+        pred_vector = {"direction": "hover", "magnitude": 0, "predictedClass": class_name, "context": "opencv"}
 
         if class_name == "fist":
-            if self.y_centroid_curr < 0.3:
+            if self.y_centroid_curr < 0.35:
                 pred_vector["direction"] = "up"
-            elif self.y_centroid_curr > 0.7:
+            elif self.y_centroid_curr > 0.65:
                 pred_vector["direction"] = "down"
-            elif self.x_centroid_curr < 0.3:
+            elif self.x_centroid_curr < 0.35:
                 pred_vector["direction"] = "left"
-            elif self.x_centroid_curr > 0.7:
+            elif self.x_centroid_curr > 0.65:
                 pred_vector["direction"] = "right"
 
         elif class_name == "rock":
-            if self.y_centroid_curr < 0.3:
+            if self.y_centroid_curr < 0.35:
                 pred_vector["direction"] = "forward"
-            elif self.y_centroid_curr > 0.7:
+            elif self.y_centroid_curr > 0.65:
                 pred_vector["direction"] = "backward"
-            elif self.x_centroid_curr < 0.3:
+            elif self.x_centroid_curr < 0.35:
                 pred_vector["direction"] = "rotate_left"
-            elif self.x_centroid_curr > 0.7:
+            elif self.x_centroid_curr > 0.65:
                 pred_vector["direction"] = "rotate_right"
         
         pred_vector["magnitude"] = round(100*math.sqrt((0.5-self.x_centroid_curr)**2+(0.5-self.y_centroid_curr)**2),3)
@@ -112,7 +112,7 @@ async def connect_to_client():
             result = hands_model.process(frame_rgb)
 
 
-            predicted_vector = {"direction": "hover", "magnitude": 0, "predictedClass": None}
+            predicted_vector = {"direction": "hover", "magnitude": 0, "predictedClass": None, "context": "opencv"}
 
             if result.multi_hand_landmarks:
                 landmarks = []

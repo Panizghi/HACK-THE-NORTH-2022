@@ -18,6 +18,11 @@ Install dependencies.
 pip install -r requirements.txt
 ```
 
+Set API key for Assembly AI (speech to text API):
+```
+set AAI_API_KEY=<API key>
+```
+
 Start server
 
 ```

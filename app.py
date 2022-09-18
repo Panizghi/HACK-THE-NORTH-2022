@@ -1,3 +1,4 @@
+from doctest import master
 from fastapi import FastAPI, Request, WebSocket
 from fastapi.responses import JSONResponse
 import uvicorn
@@ -9,17 +10,38 @@ class MasterControl:
 
     def __init__(self):
         self.vector = {"direction": "hover", "magnitude": 0.0, "prediction": None}
+        self.speech_vector = {"direction": "hover", "magnitude": 0.0, "prediction": None}
+        self.is_opencv = False
 
     def update_vector(self, vector):
         self.vector = vector
+
+    def update_speech_vector(self, speech_vector):
+        self.speech_vector = speech_vector
+
+    def set_opencv_true(self):
+        self.is_opencv = True
+
+    def set_opencv_false(self):
+        self.is_opencv = False
+
+    def get_is_opencv(self):
+        return self.is_opencv
 
     def reset_vector(self):
         self.vector["direction"] = "hover"
         self.vector["magnitude"] = 0.0
         self.vector["prediction"] = None
 
+        self.speech_vector["direction"] = "hover"
+        self.speech_vector["magnitude"] = 0.0
+        self.speech_vector["prediction"] = None
+
     def get_vector(self):
-        return self.vector
+        if self.is_opencv:
+            return self.vector
+        else:
+            return self.speech_vector
 
 
 master_control_obj = MasterControl()
@@ -37,7 +59,9 @@ async def ws_get_drone_motor_sdk_command(websocket: WebSocket):
     await websocket.accept()
     while True:
         data = {"data": "go_straight"}
-        await websocket.receive_text()
+        client_data = await websocket.receive_text()
+        client_data_json = json.loads(client_data)
+        data["data"]["clientMsg"] = client_data_json
         await websocket.send_text(json.dumps(data))
 
 
@@ -49,6 +73,9 @@ async def ws_speech_socket(websocket: WebSocket):
         client_data = await websocket.receive_text()
         client_data_json = json.loads(client_data)
         data["data"]["clientMsg"] = client_data_json
+
+        master_control_obj.update_speech_vector(client_data_json)
+
         await websocket.send_text(json.dumps(data))
 
 
@@ -62,6 +89,15 @@ async def ws_opencv_socket(websocket: WebSocket):
         data["data"]["clientMsg"] = client_data_json
         print(data)
         master_control_obj.update_vector(data["data"]["clientMsg"])
+
+        print(client_data_json["predictedClass"])
+
+        if client_data_json["predictedClass"] is None:
+            print("NOOOOOOOOOOOOONE!")
+            master_control_obj.set_opencv_false()
+        else:
+            master_control_obj.set_opencv_true()
+
         await websocket.send_text(json.dumps(data))
 
 
