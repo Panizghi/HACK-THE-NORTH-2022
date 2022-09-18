@@ -69,6 +69,13 @@ last_cmd = 0
 dir = 0
 mag = 0
 
+xi = 0 # forward and back direction
+yi = 0 # left and right direction
+zi = 0 # up and down direction
+xf = 0
+yf = 0
+zf = 0
+
 # initialize drone
 tello = Tello()
 tello.connect(False)
@@ -76,7 +83,16 @@ tello.streamon()
 
 tello.takeoff()
 
-
+# default autonomous flight
+def default_auto():
+    tello.move_forward(50)
+    tello.rotate_counter_clockwise(90)
+    tello.move_forward(50)
+    tello.rotate_counter_clockwise(90)
+    tello.move_forward(50)
+    tello.rotate_counter_clockwise(90)
+    tello.move_forward(50)
+    tello.rotate_counter_clockwise(90)
 
 async def connect_to_client():
     async with websockets.connect("ws://localhost:8000/ws/sdk_controller_socket") as websocket:
@@ -95,23 +111,33 @@ async def connect_to_client():
             # translate logic commands to drone commands
 
             if dir == "forward":
-                tello.move_forward(mag)
+                xf = xi + mag
+                tello.curve_xyz_speed(xi, yi, zi, xf, yf, zf, mag)
+            elif dir == "back":
+                xf = xi - mag
+                tello.curve_xyz_speed(xi, yi, zi, xf, yf, zf, mag)
+            elif dir == "left":
+                yf = yi - mag
+                tello.curve_xyz_speed(xi, yi, zi, xf, yf, zf, mag)
+            elif dir == "right":
+                yf = yi + mag
+                tello.curve_xyz_speed(xi, yi, zi, xf, yf, zf, mag)
+            elif dir == "up":
+                zf = zi + mag
+                tello.curve_xyz_speed(xi, yi, zi, xf, yf, zf, mag)
+            elif dir == "down":
+                zf = zi - mag
+                tello.curve_xyz_speed(xi, yi, zi, xf, yf, zf, mag)
             elif dir == "rotate_left":
                 tello.rotate_counter_clockwise(mag)
             elif dir == "rotate_right":
                 tello.rotate_clockwise(mag)
-            elif dir == "left":
-                tello.move_left(mag)
-            elif dir == "right":
-                tello.move_right(mag)
-            elif dir == "up":
-                tello.move_up(mag)
-            elif dir == "down":
-                tello.move_down(mag)
-            elif dir == "hover":
-                pass
-                # tello.move_forward(0)
             else:
-                tello.move_back(mag)
+                # hover
+                pass
+            
+            xi = xf
+            yi = yf
+            zi = zf
 
 asyncio.run(connect_to_client())
