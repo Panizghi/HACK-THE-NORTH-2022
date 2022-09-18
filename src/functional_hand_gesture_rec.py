@@ -4,7 +4,7 @@ import mediapipe as mp
 import tensorflow as tf
 from tensorflow.keras.models import load_model
 
-from drone import drone_cmd
+from drone.drone_cmd import tello, dir, mag
 
 cap = cv2.VideoCapture(0)
 
@@ -54,13 +54,11 @@ while True:
     # opencv ui
     cv2.imshow("Drone Human Interface", frame)
 
-    drone_speed = drone_cmd.get_info("speed")
-    drone_dir = drone_cmd.get_info("direction")
-    drone_lvl = drone_cmd.get_info("battery")
+    drone_bat = tello.get_battery()
 
-    cv2.putText(frame, drone_speed, (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0))
-    cv2.putText(frame, drone_dir, (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0))
-    cv2.putText(frame, drone_lvl, (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0))
+    cv2.putText(frame, mag, (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0))
+    cv2.putText(frame, dir, (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0))
+    cv2.putText(frame, drone_bat, (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0))
 
     if cv2.waitKey(1) == ord("q"):
         break

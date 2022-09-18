@@ -13,9 +13,9 @@ LOGIC_API_ENDPOINT = ""
 
 image_name = "capture"
 image_index = 0
-cmd_history = []
-cmd_index = 0
-move_mag = 0
+last_cmd = 0
+dir = 0
+mag = 0
 
 # initialize drone
 tello = Tello()
@@ -23,40 +23,24 @@ tello.connect(False)
 tello.streamon()
 tello.takeoff()
 
-def get_info(info_type):
-    if info_type == "speed":
-        return tello.speed()
-    elif info_type == "battery":
-        return tello.battery()
-    elif info_type == "direction":
-        return cmd_history[cmd_index]
-
 cmd = requests.get(LOGIC_API_ENDPOINT)
 while cmd != "land":
     # get logic commands and parse json
-    cmd = json.loads(requests.get(LOGIC_API_ENDPOINT))["data"]
-
-    # damper speed of drone based on command frequency
-    for i in range(sizeof(cmd_history)):
-        move_mag += cmd_history[i]
-    move_mag /= MAX_CMD_HISTORY
+    cmd = json.loads(requests.get(LOGIC_API_ENDPOINT))
+    dir = cmd["direction"]
+    mag = cmd["magnitude"]
     
     # translate logic commands to drone commands
     if cmd == "forward":
-        tello.move_forward(move_mag)
+        tello.move_forward(mag)
     elif cmd == "left":
-        tello.move_left(move_mag)
+        tello.move_left(mag)
     elif cmd == "right":
-        tello.move_right(move_mag)
+        tello.move_right(mag)
     else:
-        tello.move_back(move_mag)
+        tello.move_back(mag)
 
-    cmd_history[cmd_index] = cmd
-    cmd_index = cmd_index + 1
-
-    # restrict max size of command buffer
-    if sizeof(cmd_history) >= MAX_CMD_HISTORY:
-        cmd_index = 0
+    last_cmd = cmd
 
     # get frame from drone camera
     frame_read = tello.get_frame_read()
