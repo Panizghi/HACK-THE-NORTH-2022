@@ -49,9 +49,9 @@ Choices of direction:
 * `back`
 * `left`
 * `right`
-* `top`
-* `bottom`
-* `rotate_left`
-* `rotate_right`
+* `up`
+* `down`
+* `rotate_left` or `turn_left`
+* `rotate_right` or `turn_right`
 
 Go to localhost port `8000`.
