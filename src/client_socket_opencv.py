@@ -63,26 +63,26 @@ class CommandPrediction:
         pred_vector = {"direction": "hover", "magnitude": 0, "predictedClass": class_name}
 
         if class_name == "fist":
-            if self.y_centroid_curr < 0.3:
+            if self.y_centroid_curr < 0.45:
                 pred_vector["direction"] = "up"
-            elif self.y_centroid_curr > 0.7:
+            elif self.y_centroid_curr > 0.55:
                 pred_vector["direction"] = "down"
-            elif self.x_centroid_curr < 0.3:
+            elif self.x_centroid_curr < 0.45:
                 pred_vector["direction"] = "left"
-            elif self.x_centroid_curr > 0.7:
+            elif self.x_centroid_curr > 0.55:
                 pred_vector["direction"] = "right"
 
         elif class_name == "rock":
-            if self.y_centroid_curr < 0.3:
+            if self.y_centroid_curr < 0.45:
                 pred_vector["direction"] = "forward"
-            elif self.y_centroid_curr > 0.7:
+            elif self.y_centroid_curr > 0.55:
                 pred_vector["direction"] = "backward"
-            elif self.x_centroid_curr < 0.3:
+            elif self.x_centroid_curr < 0.45:
                 pred_vector["direction"] = "rotate_left"
-            elif self.x_centroid_curr > 0.7:
+            elif self.x_centroid_curr > 0.55:
                 pred_vector["direction"] = "rotate_right"
         
-        pred_vector["magnitude"] = round(math.sqrt((0.5-self.x_centroid_curr)**2+(0.5-self.y_centroid_curr)**2),3)
+        pred_vector["magnitude"] = 100*round(math.sqrt((0.5-self.x_centroid_curr)**2+(0.5-self.y_centroid_curr)**2),3)
 
         return pred_vector
 
